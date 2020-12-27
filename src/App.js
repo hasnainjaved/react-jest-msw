@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import useFormSubmission from "./useFormSubmission";
 
-function App() {
+const App = () => {
+  const [{ status, data, error }, formSubmissionCallback] = useFormSubmission();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const username = event.target.elements["username"].value;
+    formSubmissionCallback({ username });
+  };
+
+  console.log("Status: ", status);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="username">Username</label>
+        <input type="text" id="username" name="username" />
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+      <div>
+        {status === "pending" ? <span>Registering username</span> : null}
+      </div>
+      <div>
+        {status === "error" ? <span>Something went wrong: {error.message}</span> : null}
+      </div>
+      <div>
+        {status === "resolved" ? <span>Registration successfully. ID: {data.id}</span> : null}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
